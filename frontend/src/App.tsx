@@ -1,11 +1,11 @@
 import "./App.css";
-import { HelloWorld } from "./components/HelloWorld";
+import SideNav from "./components/SideNav";
 
 function App() {
 
   return (
-    <div>
-      <HelloWorld/>
+    <div className="flex flex-row-reverse">
+      <SideNav/>
     </div>
   );
 }
