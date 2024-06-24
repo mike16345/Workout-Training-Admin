@@ -2,32 +2,26 @@ import React, { useState } from 'react'
 
 
 const SideNav = () => {
-    const [selected, setSelected]= useState<string>(``);
+    const [selected, setSelected] = useState<string>(``);
 
     return (
-        <div className='w-[30vh] text-primary h-screen bg-black p-4 flex flex-col gap-16 '>
-            <div 
-                className='p-10 py-20 bg-accent text-center rounded text-3xl '
+        <div className='absolute w-[250px] text-primary h-screen bg-black  flex flex-col gap-16 '>
+            <div
+                className='p-10 m-4 py-20 bg-accent text-center rounded text-3xl '
             >AB</div>
-            <nav className='w-full flex justify-center p-4'>
-                <ul className='text-center flex flex-col gap-4 w-full font-bold'>
+            <nav className='w-full flex justify-center'>
+                <ul className='text-center flex flex-col  w-full font-bold'>
                     <li
-                        className={selected==`home`?
-                            'bg-secondary py-2 rounded hover:cursor-pointer active:animate-ping':
-                            'hover:bg-secondary py-2 rounded hover:cursor-pointer active:animate-ping'}
-                        onClick={()=> setSelected(`home`)}
+                        className={`hover:bg-slate-700 ${selected == `home` ? `bg-secondary` : ``} py-2 rounded hover:cursor-pointer  w-full`}
+                        onClick={() => setSelected(`home`)}
                     >דף הבית</li>
                     <li
-                        className={selected==`clients`?
-                            'bg-secondary py-2 rounded hover:cursor-pointer active:animate-ping':
-                            'hover:bg-secondary py-2 rounded hover:cursor-pointer active:animate-ping'}
-                        onClick={()=> setSelected(`clients`)}
+                        className={`hover:bg-slate-700 ${selected == `clients` ? `bg-secondary` : ``} py-2 rounded hover:cursor-pointer `}
+                        onClick={() => setSelected(`clients`)}
                     >לקוחות</li>
                     <li
-                        className={selected==`posts`?
-                            'bg-secondary py-2 rounded hover:cursor-pointer active:animate-ping':
-                            'hover:bg-secondary py-2 rounded hover:cursor-pointer active:animate-ping'}
-                        onClick={()=> setSelected(`posts`)}
+                        className={`hover:bg-slate-700 ${selected == `posts` ? `bg-secondary` : ``} py-2 rounded hover:cursor-pointer `}
+                        onClick={() => setSelected(`posts`)}
                     >פוסטים</li>
                 </ul>
             </nav>
