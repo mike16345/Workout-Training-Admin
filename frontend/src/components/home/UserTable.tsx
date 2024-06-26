@@ -20,9 +20,8 @@ import {
 
 
 const UserTable = () => {
-    const [rowsPerPage, setRowsPerPage] = useState(5)
-    const [rowStart, setRowStart] = useState(0)
-    const [rowEnd, setRowEnd] = useState(rowsPerPage)
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
     const users = [
         { id: 1, name: `נועם מושקוביץ`, email: `noammz101@gmail.com` },
@@ -43,25 +42,28 @@ const UserTable = () => {
         { id: 16, name: `מיכאל גני`, email: `mike165@gmail.com` },
     ]
 
-    useEffect(() => {
-        setRowEnd(rowStart + rowsPerPage)
-    }, [rowsPerPage])
+    const handleChangePage = (newPage: number) => {
+        const maxPage = Math.ceil(users.length / rowsPerPage)
 
-    const nextPage = () => {
+        if (newPage < 0) return
+        if (newPage >= maxPage) return
 
-        setRowStart(rowStart + rowsPerPage)
-        setRowEnd(rowEnd + rowsPerPage)
+        setPage(newPage);
+    };
 
-    }
-    const previousPage = () => {
-        if (rowStart - rowsPerPage <= 0) {
-            setRowStart(0)
-            setRowEnd(rowsPerPage)
-        } else {
-            setRowStart(rowStart - rowsPerPage)
-            setRowEnd(rowStart)
-        }
-    }
+    const handleChangeRowsPerPage = (value) => {
+        setRowsPerPage(+value);
+        setPage(0);
+    };
+    /*  const previousPage = () => {
+         if (rowStart - rowsPerPage <= 0) {
+             setRowStart(0)
+             setRowEnd(rowsPerPage)
+         } else {
+             setRowStart(rowStart - rowsPerPage)
+             setRowEnd(rowStart)
+         }
+     } */
 
     return (
         <div
@@ -84,29 +86,31 @@ const UserTable = () => {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {users.slice(rowStart, rowEnd).map(user => (
-                        <TableRow key={user.id}>
-                            <TableCell>{user.id}</TableCell>
-                            <TableCell>{user.name}</TableCell>
-                            <TableCell>{user.email}</TableCell>
-                        </TableRow>
-                    ))}
+                    {users
+                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        .map(user => (
+                            <TableRow key={user.id}>
+                                <TableCell>{user.id}</TableCell>
+                                <TableCell>{user.name}</TableCell>
+                                <TableCell>{user.email}</TableCell>
+                            </TableRow>
+                        ))}
                 </TableBody>
                 <TableFooter>
                     <TableRow>
                         <TableCell>
                             <button
-                                onClick={previousPage}
+                                onClick={() => handleChangePage(page - 1)}
                                 className='ml-4'
                             >קודם</button>
                             <div className='inline ml-4'>{rowsPerPage}</div>
                             <button
-                                onClick={nextPage}
+                                onClick={() => handleChangePage(page + 1)}
                             >הבא</button>
                         </TableCell>
                         <TableCell>
                             <Select
-                                onValueChange={(value) => setRowsPerPage(value)}
+                                onValueChange={(value) => handleChangeRowsPerPage(value)}
                             >
                                 <SelectTrigger>
                                     <SelectValue placeholder={rowsPerPage} />
