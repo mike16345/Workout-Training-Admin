@@ -16,14 +16,16 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { Button } from "@/components/ui/button"
+import SearchBar from './SearchBar'
+
+
 
 
 
 const UserTable = () => {
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
 
-    const users = [
+    const usersTest = [
         { id: 1, name: `נועם מושקוביץ`, email: `noammz101@gmail.com` },
         { id: 2, name: `מיכאל גני`, email: `mike165@gmail.com` },
         { id: 3, name: `נועם מושקוביץ`, email: `noammz101@gmail.com` },
@@ -42,8 +44,16 @@ const UserTable = () => {
         { id: 16, name: `מיכאל גני`, email: `mike165@gmail.com` },
     ]
 
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [users, setUsers] = useState(usersTest)
+    const [filteredUsers, setFlteredUsers] = useState(null)
+    const [tableData, setTableData] = useState()
+
+
+
     const handleChangePage = (newPage: number) => {
-        const maxPage = Math.ceil(users.length / rowsPerPage)
+        const maxPage = Math.ceil(tableData.length / rowsPerPage)
 
         if (newPage < 0) return
         if (newPage >= maxPage) return
@@ -55,21 +65,28 @@ const UserTable = () => {
         setRowsPerPage(+value);
         setPage(0);
     };
-    /*  const previousPage = () => {
-         if (rowStart - rowsPerPage <= 0) {
-             setRowStart(0)
-             setRowEnd(rowsPerPage)
-         } else {
-             setRowStart(rowStart - rowsPerPage)
-             setRowEnd(rowStart)
-         }
-     } */
+
+    useEffect(() => {
+        setTableData(users)
+    }, [])
+
+    useEffect(() => {
+        if (filteredUsers) {
+            setTableData(filteredUsers)
+        } else {
+            setTableData(users)
+        }
+    }, [filteredUsers])
+
 
     return (
         <div
             dir='rtl'
             className='w-screen pt-10 overflow-y-scroll max-h-screen'
         >
+            <div className='w-[600px] m-auto'>
+                <SearchBar users={users} setFilteredUsers={setFlteredUsers} />
+            </div>
             <Table className='w-[600px] m-auto border-2  '>
                 <TableCaption>A List Of Users</TableCaption>
                 <TableHeader >
@@ -86,7 +103,7 @@ const UserTable = () => {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {users
+                    {tableData && tableData
                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                         .map(user => (
                             <TableRow key={user.id}>
@@ -98,15 +115,15 @@ const UserTable = () => {
                 </TableBody>
                 <TableFooter>
                     <TableRow>
-                        <TableCell>
-                            <button
+                        <TableCell colSpan={2}>
+                            <Button
                                 onClick={() => handleChangePage(page - 1)}
                                 className='ml-4'
-                            >קודם</button>
-                            <div className='inline ml-4'>{rowsPerPage}</div>
-                            <button
+                            >קודם</Button>
+                            <div className='inline ml-4'>{tableData && tableData.length}</div>
+                            <Button
                                 onClick={() => handleChangePage(page + 1)}
-                            >הבא</button>
+                            >הבא</Button>
                         </TableCell>
                         <TableCell>
                             <Select
