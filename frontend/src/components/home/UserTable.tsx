@@ -18,6 +18,16 @@ import {
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import SearchBar from './SearchBar'
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination"
+
 
 
 
@@ -43,20 +53,21 @@ const UserTable = () => {
         { id: 15, name: `נועם מושקוביץ`, email: `noammz101@gmail.com` },
         { id: 16, name: `מיכאל גני`, email: `mike165@gmail.com` },
     ]
-
+    const [tableData, setTableData] = useState()
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [pages, setPages] = useState()
     const [users, setUsers] = useState(usersTest)
     const [filteredUsers, setFlteredUsers] = useState(null)
-    const [tableData, setTableData] = useState()
+
 
 
 
     const handleChangePage = (newPage: number) => {
-        const maxPage = Math.ceil(tableData.length / rowsPerPage)
+        const maxPage = Math.max(...pages)
 
         if (newPage < 0) return
-        if (newPage >= maxPage) return
+        if (newPage > maxPage) return
 
         setPage(newPage);
     };
@@ -77,6 +88,17 @@ const UserTable = () => {
             setTableData(users)
         }
     }, [filteredUsers])
+    useEffect(() => {
+        if (tableData) {
+            const pageAmount = tableData.length / rowsPerPage;
+            let pageArr = [];
+            for (let index = 0; index < pageAmount; index++) {
+                pageArr.push(index);
+
+            }
+            setPages(pageArr)
+        }
+    }, [tableData, rowsPerPage])
 
 
     return (
@@ -114,32 +136,45 @@ const UserTable = () => {
                         ))}
                 </TableBody>
                 <TableFooter>
-                    <TableRow>
-                        <TableCell colSpan={2}>
-                            <Button
-                                onClick={() => handleChangePage(page - 1)}
-                                className='ml-4'
-                            >קודם</Button>
-                            <div className='inline ml-4'>{tableData && tableData.length}</div>
-                            <Button
-                                onClick={() => handleChangePage(page + 1)}
-                            >הבא</Button>
-                        </TableCell>
-                        <TableCell>
-                            <Select
-                                onValueChange={(value) => handleChangeRowsPerPage(value)}
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder={rowsPerPage} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="5">5</SelectItem>
-                                    <SelectItem value="10">10</SelectItem>
-                                    <SelectItem value="20">20</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </TableCell>
-                    </TableRow>
+                    <TableCell>
+                        <Select
+                            onValueChange={(value) => handleChangeRowsPerPage(value)}
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder={rowsPerPage} />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="5">5</SelectItem>
+                                <SelectItem value="10">10</SelectItem>
+                                <SelectItem value="20">20</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </TableCell>
+                    <TableCell colSpan={2}>
+                        <Pagination>
+                            <PaginationContent dir='ltr'>
+                                <PaginationItem>
+                                    <PaginationPrevious
+                                        onClick={() => handleChangePage(page - 1)}
+                                    />
+                                </PaginationItem>
+                                {pages.map(num => (
+                                    <PaginationItem>
+                                        <PaginationLink
+                                            onClick={() => setPage(num)}
+                                            isActive={num == page ? true : false}
+                                        >{num}</PaginationLink>
+                                    </PaginationItem>
+                                ))}
+
+                                <PaginationItem>
+                                    <PaginationNext
+                                        onClick={() => handleChangePage(page + 1)}
+                                    />
+                                </PaginationItem>
+                            </PaginationContent>
+                        </Pagination>
+                    </TableCell>
                 </TableFooter>
             </Table>
         </div>
